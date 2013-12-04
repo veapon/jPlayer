@@ -59,6 +59,8 @@
 		this.cssSelector.previous = this.cssSelector.cssSelectorAncestor + " .jp-previous";
 		this.cssSelector.shuffle = this.cssSelector.cssSelectorAncestor + " .jp-shuffle";
 		this.cssSelector.shuffleOff = this.cssSelector.cssSelectorAncestor + " .jp-shuffle-off";
+		this.cssSelector.repeatone = this.cssSelector.cssSelectorAncestor + " .jp-repeatone";
+		this.cssSelector.repeatoneOff = this.cssSelector.cssSelectorAncestor + " .jp-repeatone-off";
 
 		// Override the cssSelectorAncestor given in options
 		this.options.cssSelectorAncestor = this.cssSelector.cssSelectorAncestor;
@@ -75,7 +77,15 @@
 
 		// Create an ended event handler to move to the next item
 		$(this.cssSelector.jPlayer).bind($.jPlayer.event.ended, function() {
-			self.next();
+			// repeatone event add by veapon
+			//console.log(self.current);
+			var index = self.current >= 0 ? self.current : 0;
+			if( self.options.playlistOptions.repeatone ) {
+				self.select(index);
+				self.play();
+			} else {
+				self.next();
+			}			
 		});
 
 		// Create a play event handler to pause other instances
@@ -114,6 +124,20 @@
 			return false;
 		}).hide();
 
+		$(this.cssSelector.repeatone).click(function() {
+			self.options.playlistOptions.repeatone = false;
+			$(this).hide();
+			$(self.cssSelector.repeatoneOff).show();
+			return false;
+		});
+
+		$(this.cssSelector.repeatoneOff).click(function() {
+			self.options.playlistOptions.repeatone = true;
+			$(this).hide();
+			$(self.cssSelector.repeatone).show();
+			return false;
+		});
+
 		// Put the title in its initial display state
 		if(!this.options.fullScreen) {
 			$(this.cssSelector.title).hide();
@@ -139,6 +163,7 @@
 				autoPlay: false,
 				loopOnPrevious: false,
 				shuffleOnLoop: true,
+				repeatone: false,
 				enableRemoveControls: false,
 				displayTime: 'slow',
 				addTime: 'fast',
@@ -306,7 +331,17 @@
 				$(this.cssSelector.shuffleOff).hide();
 				$(this.cssSelector.shuffle).show();
 			}
-		},
+
+			// repeatone button add by veapon
+			if( this.options.playlistOptions.repeatone ){
+				$(this.cssSelector.repeatone).show();
+				$(this.cssSelector.repeatoneOff).hide();
+			} else {
+				$(this.cssSelector.repeatone).hide();
+				$(this.cssSelector.repeatoneOff).show();
+			}
+
+ 		},
 		_highlight: function(index) {
 			if(this.playlist.length && index !== undefined) {
 				$(this.cssSelector.playlist + " .jp-playlist-current").removeClass("jp-playlist-current");
