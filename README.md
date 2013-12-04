@@ -1,6 +1,6 @@
 #Fork from <a href="https://github.com/happyworm/jPlayer">Jplayer</a>
 
-#Change log:
+#Changelog:
 * Add 'repeat one' playlist option.
 
 ``` javascript
